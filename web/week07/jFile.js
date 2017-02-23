@@ -1,3 +1,5 @@
+$(":file").filestyle();
+
 function toggleView(elem1, elem2){
     
     elem1.style.display = "none";

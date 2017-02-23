@@ -21,32 +21,50 @@ session_start();
         }
 
 /////////////////////////////////////////
-
+//var_dump($_FILES);
 $target_dir = "uploads/";
-$target_file = $_FILES["address"]["name"];
-$file = fopen($target_file, "wb");
+$filename = $_FILES["image"]["tmp_name"];
+$handle = fopen($filename, "r"); 
+$fsize = filesize($filename); 
+$contents = fread($handle, $fsize); 
+$byteArray = unpack("H*",$contents); 
+//$byteArray = addslashes($contents);
+fclose($handle);
+
+//$data = pack("H*", pg_unescape_bytea($contents));
+// $data;
 
 
-$file = fopen($target_file, "rb");
-$contents = fread($file, filesize($filename));
-var_dump($file);
-var_dump($contents);
-fclose($file);
+$binary = file_get_contents($filename);
+$base64 = base64_encode($binary);
+$base64 = pg_escape_bytea($binary);
+//var_dump($base64);
 
+$new = addslashes($contents);
+$new = base64_decode($new);
+
+var_dump($new);
+
+//print_r($byteArray); 
+for($n = 0; $n < 16; $n++)
+{ 
+    //echo $byteArray [$n].'<br/>'; 
+}
+    //$safe_string_to_store = pg_escape_bytea($byteArray);
     
-    
-    //contributor_id,name,address,date,royalty_id,rating,size,description,level
-    
-    //if ($uploadOk){
 
+    $check = getimagesize($filename);
+    if($check) {
         
+            $id = $_SESSION['user_id'];
         
         //if (isset($_SESSION['uploadOk']) and $_SESSION['uploadOk']==1){
-            $statement = $db->prepare("INSERT INTO pixelArt(contributor_id,name,address,date,royalty_id,rating,size,description,level) VALUES (1,:name,:address,:date,:royalty_id,:rating,:size,:description,:level)");
+            $statement = $db->prepare("INSERT INTO pixelArt(contributor_id,name,address,date,royalty_id,rating,size,description,level) VALUES (:contributor_id,:name,:address::bytea,:date,:royalty_id,:rating,:size,:description,:level)");
             
 	      
+	        $statement->bindValue(':contributor_id',htmlspecialchars($id));
 	        $statement->bindValue(':name',htmlspecialchars($_POST['name']));
-	        $statement->bindValue(':address',htmlspecialchars($file));
+	        $statement->bindValue(':address',$new, PDO::PARAM_LOB);
 	        $statement->bindValue(':date',htmlspecialchars($_POST['date']));
 	        $statement->bindValue(':royalty_id',htmlspecialchars($_POST['royalty_id']));
 	        $statement->bindValue(':rating',htmlspecialchars($_POST['rating']));
@@ -55,6 +73,10 @@ fclose($file);
 	        $statement->bindValue(':level',htmlspecialchars(1));
     
             $statement->execute();
+    }
+    else{
+            echo "File is not an image.";
+    }
         //}
             
         

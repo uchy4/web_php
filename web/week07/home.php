@@ -19,5 +19,10 @@
         <form action='changeInfo.php' method='post' id='home'>
             <button type='submit' onmouseover="hover(this);" onmouseout="unhover(this);">Change Account Info</button>
         </form>
+    
+        <form action='getImage.php' method='post' id='home'>
+            <input type="text" name="name" id="search" placeholder="search Artwork"><br>
+            <button type='submit' onmouseover="hover(this);" onmouseout="unhover(this);">Search Art</button>
+        </form>
     </body>
 </html>

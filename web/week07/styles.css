@@ -21,6 +21,7 @@ body #home {
     padding: 10px;
     align-content: center;
     border-radius: 10px;
+    width:300px;
 }
 
 body{
@@ -28,5 +29,43 @@ body{
 }
 
 #addArt input{
-    width:30px;
+    width:200px;
+    border-radius: 5px;
+}
+
+#addArt textarea{
+    width:200px;
+    border-radius: 5px;
+}
+
+#addArt button{
+    width:80px;
+    border-radius: 5px;
+}
+
+#addArt file{
+    width:80px;
+    border-radius: 10px;
+    border-width: 2px;
+}
+
+#search{
+    width:200px;
+    border-radius:5px;
+}
+
+
+.button {
+    background-color: #4CAF50;
+    border: 2px solid green;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    width:150px;
+    border-radius:10px;
 }

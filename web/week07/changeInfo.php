@@ -20,15 +20,18 @@
 ?>
 <!DOCTYPE html>
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script type="text/javascript" src="jFile.js"></script>
+    <title>changeInfo</title>
+</head>
     <body>
-        
-        
         <?php
 
 
             $statement = $db->prepare("INSERT INTO contributor(u_name, password, email, access_level) VALUES (:u_name, :password, :email, 1)");
-            $statement->bindValue(':u_name',htmlspecialchars($_POST['newUser']));
-            $statement->bindValue(':password',htmlspecialchars($_POST['newPassword']));
+            $statement->bindValue(':u_name',htmlspecialchars($_POST['user']));
+            $statement->bindValue(':password',htmlspecialchars($_POST['password']));
             $statement->bindValue(':email',htmlspecialchars($_POST['email']));
 
             $statement->execute();
@@ -39,3 +42,7 @@
     
     </body>
 </html>
+
+
+
+

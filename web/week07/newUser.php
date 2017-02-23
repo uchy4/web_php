@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 
@@ -17,23 +19,22 @@
     echo "ERROR connecting to DB. Details: $ex";
     die();
     }
-?>
-<!DOCTYPE html>
-<html>
-    <body>
-        <?php
 
+    //store session vars
+    $_SESSION['user'] = $_POST['user'];
+    $_SESSION['password'] = $_POST['password'];
+    $_SESSION['email'] = $_POST['email'];
 
-            $statement = $db->prepare("INSERT INTO contributor(u_name, password, email, access_level) VALUES (:u_name, :password, :email, 1)");
-            $statement->bindValue(':u_name',htmlspecialchars($_POST['user']));
-            $statement->bindValue(':password',htmlspecialchars($_POST['password']));
-            $statement->bindValue(':email',htmlspecialchars($_POST['email']));
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-            $statement->execute();
+    $statement = $db->prepare("INSERT INTO contributor(u_name, password, email, access_level) VALUES (:u_name, :password, :email, 1)");
+    $statement->bindValue(':u_name',htmlspecialchars($_POST['user']));
+    $statement->bindValue(':password',$password);
+    $statement->bindValue(':email',htmlspecialchars($_POST['email']));
 
-            header('Location: home.php');
+    $statement->execute();
+
+    header('Location: login.php');
         
-        ?>
+?>
     
-    </body>
-</html>

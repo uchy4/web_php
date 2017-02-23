@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 
@@ -14,7 +16,7 @@
     }
     catch(PDOException $ex)
     {
-    echo "ERROR connecting to DB. Details: $ex";
+    echo "1ERROR connecting to DB. Details: $ex";
     die();
     }
 ?>
@@ -24,27 +26,33 @@
         <?php
         
 
-            try{
-            $query = $db->query("SELECT u_name, password FROM contributor");
-            }
-            catch(PDOException $ex){
-                
-                echo "ERROR connecting to DB. Details: $ex";
+        
+            //store session vars
+            $_SESSION['user'] = $_POST['user'];
+            $_SESSION['password'] = $_POST['password'];
+
+
+
+            $statement = $db->prepare("SELECT id, password FROM contributor WHERE u_name = :user_name");
+            $statement->bindValue(':user_name',$_POST['user'], PDO::PARAM_STR);
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            var_dump($result);
+            $check = false;
+            $check = password_verify($_POST['password'],$result[0]['password']);
+            $_SESSION['user_id'] = $result[0]['id'];
+
+            if ($check){  
+                //relocate to home
+                print 'true';
+                header('Location: home.php');
+            }else{
+                print 'false';
                 die();
-                header('Location: login.php');
+                header("Location: login.php");
             }
-        
-            foreach ($query as $row){
-                if ($_POST['user']==$row['u_name'] and $_POST['password']==$row['password']){
-                    echo 'connected';
-                    header('Location: home.php');
-                }
-                else{
-                    echo 'not connected';
-                }
-            }
-        
-        
+
         ?>
     
     </body>
